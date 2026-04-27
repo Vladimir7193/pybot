@@ -1,0 +1,64 @@
+READY BUILD PATCH NOTES
+=======================
+
+What was fixed (Previous)
+--------------------------
+1. HTF trend / bias no longer depends only on a fresh BOS on the latest candle.
+2. Market structure is evaluated using the last CLOSED candle by default.
+3. Confirmed directional bias is preserved between candles instead of constantly falling back to "ranging".
+4. If SMC bias is unresolved, the engine can use classic HTF fallback instead of rejecting the symbol immediately.
+5. STRICT/RELAXED order now respects config.SMC_MODE.
+6. Range filter no longer kills RELAXED mode instantly inside every range.
+7. Windows launcher was rebuilt for stable startup from the project folder.
+
+CRITICAL FIXES (20.04.2026)
+----------------------------
+🚨 BUG #1: 'tuple' object has no attribute 'get'
+   - Fixed: Added type validation in bybit_client._get() and get_instrument_info()
+   - Fixed: Corrected identify_pool_liquidity() in smc_key_levels.py to handle tuple[Swing, Swing]
+   - Added: Detailed error logging for API responses
+   - Status: ✅ FIXED
+
+🚨 BUG #2: name 'struct_bias' is not defined
+   - Fixed: Changed struct_bias → struct_det.trend in signal_engine.py (lines 475, 477)
+   - Status: ✅ FIXED
+
+✅ BONUS: Rate Limit Handling
+   - Added: HTTP 429 handling with Retry-After header
+   - Added: Automatic retry with exponential backoff
+   - Status: ✅ IMPLEMENTED
+
+Testing
+-------
+Run test_bugfixes.py to verify all fixes:
+   cd pybot
+   python test_bugfixes.py
+
+Or on Windows:
+   test_fixes.bat
+
+Recommended defaults
+--------------------
+- Keep paper mode first for 1-2 days.
+- Watch reject stats in logs/rocketbot.log.
+- If still too few signals, set SMC_MODE = "RELAXED" in config.py.
+
+Files changed
+-------------
+- pybot/bybit_client.py (lines 44-82, 106-135) - type validation + rate limit
+- pybot/signal_engine.py (lines 475, 477) - struct_bias fix
+- pybot/smc_key_levels.py (lines 196-255) - tuple[Swing, Swing] handling
+
+Files removed (cleanup)
+-----------------------
+- test_bugfixes.py (temporary test file)
+- test_fixes.bat (temporary test launcher)
+- CRITICAL_BUGFIX_20240420.md (temporary documentation)
+- QUICK_FIX_GUIDE.md (temporary guide)
+- README_BUGFIX.txt (temporary readme)
+
+Files added
+-----------
+- README.md (main documentation)
+
+Status: ✅ READY FOR PRODUCTION
