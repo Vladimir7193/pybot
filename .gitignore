@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+data_cache/
+logs/
+sweep_results.json
+sweep_focus_results.json
